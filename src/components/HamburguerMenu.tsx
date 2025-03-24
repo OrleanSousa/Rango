@@ -1,4 +1,3 @@
-import { useAuth, useUser } from "@clerk/clerk-react"; // Para login/logout e dados do usuário
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -15,8 +14,6 @@ interface HamburgerMenuProps {
 }
 
 function HamburgerMenu({ menuOpen, toggleMenu }: HamburgerMenuProps) {
-  const { signOut } = useAuth();
-  const { user } = useUser(); // Dados do usuário autenticado via Clerk
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
   const [menuContent, setMenuContent] = useState({
@@ -25,12 +22,15 @@ function HamburgerMenu({ menuOpen, toggleMenu }: HamburgerMenuProps) {
     email: "user@mail.com",
   });
 
+  // Recupera o usuário logado do localStorage
   useEffect(() => {
-    if (user) {
+    const loggedInUser = localStorage.getItem("loggedInUser");
+    if (loggedInUser) {
+      const user = JSON.parse(loggedInUser);
       setMenuContent({
         imageUrl: user.imageUrl || "https://via.placeholder.com/150",
         firstName: user.firstName || "User Name",
-        email: user.emailAddresses[0]?.emailAddress || "user@mail.com",
+        email: user.email || "user@mail.com",
       });
     }
 
@@ -46,16 +46,11 @@ function HamburgerMenu({ menuOpen, toggleMenu }: HamburgerMenuProps) {
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
-  }, [menuOpen, toggleMenu, user]);
+  }, [menuOpen, toggleMenu]);
 
-  const handleSignOut = async () => {
-    try {
-      await signOut(); // Logout usando Clerk
-      localStorage.removeItem("loggedInUser"); // Remove do localStorage
-      navigate("/"); // Redireciona para a página inicial
-    } catch (error) {
-      console.error("Erro ao fazer logout:", error);
-    }
+  const handleSignOut = () => {
+    localStorage.removeItem("loggedInUser"); // Remove o usuário logado
+    navigate("/"); // Redireciona para a página inicial
   };
 
   return (

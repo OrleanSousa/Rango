@@ -8,7 +8,6 @@ function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [userData, setUserData] = useState({
     firstName: "Usuário",
-    email: "user@mail.com",
     imageUrl: "https://via.placeholder.com/150/150",
   });
 
@@ -17,7 +16,6 @@ function Header() {
       // Caso esteja logado com Clerk
       setUserData({
         firstName: user.firstName || "Usuário",
-        email: user.emailAddresses[0]?.emailAddress || "user@mail.com", // Pegando email do Clerk
         imageUrl: user.imageUrl || "https://via.placeholder.com/150/150",
       });
     } else {
@@ -27,7 +25,6 @@ function Header() {
         const parsedUser = JSON.parse(storedUser);
         setUserData({
           firstName: parsedUser.firstName || "Usuário",
-          email: parsedUser.email || "user@mail.com",
           imageUrl: parsedUser.imageUrl || "https://via.placeholder.com/150/150",
         });
       }
@@ -48,7 +45,7 @@ function Header() {
           />
           <div className="flex flex-col">
             <span className="text-gray-800 font-medium">{userData.firstName}</span>
-            <span className="text-gray-500 text-sm">{userData.email}</span>
+            
           </div>
         </div>
       ) : (
