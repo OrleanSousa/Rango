@@ -18,7 +18,7 @@ function Header() {
       {isSignedIn ? (
         <div className="flex items-center gap-2">
           <img
-            src={user.profileImageUrl || "https://via.placeholder.com/150"}
+            src={user.imageUrl || "https://via.placeholder.com/150"}
             alt="Foto do usuário"
             className="w-10 h-10 rounded-full border-2 border-gray-300 shadow-sm cursor-pointer"
             onClick={toggleMenu} // Clicando na foto, abre o menu hambúrguer

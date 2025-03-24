@@ -40,7 +40,7 @@ function HamburgerMenu({ menuOpen, toggleMenu }: HamburgerMenuProps) {
       {/* Foto do usuário e informações básicas */}
       <div className="p-8 mb-6 flex items-center gap-4 border-b border-gray-300">
         <img
-          src={user?.profileImageUrl || "https://via.placeholder.com/150"}
+          src={user?.imageUrl || "https://via.placeholder.com/150"}
           alt="user"
           className="w-16 h-16 rounded-2xl"
         />
