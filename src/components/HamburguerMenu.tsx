@@ -1,27 +1,43 @@
-import { useUser } from "@clerk/clerk-react";
-import { useEffect, useRef } from "react";
+import { useAuth } from "@clerk/clerk-react"; // Apenas para logout
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Redirecionamento após o logout
 
 interface MenuItemProps {
-  label: string; // O texto do item de menu
-  withSwitch?: boolean; // Indica se o item deve ter um botão de alternância
-  isSignOut?: boolean; // Indica se o item é para logout
+  label: string;
+  withSwitch?: boolean;
+  isSignOut?: boolean;
+  onClick?: () => void;
 }
 
-// Define os tipos das props do HamburgerMenu
 interface HamburgerMenuProps {
-  menuOpen: boolean; // Indica se o menu está aberto
-  toggleMenu: () => void; // Função para alternar o estado do menu
+  menuOpen: boolean;
+  toggleMenu: () => void;
 }
 
 function HamburgerMenu({ menuOpen, toggleMenu }: HamburgerMenuProps) {
-  const { user } = useUser(); // Obtém informações do usuário
-  const menuRef = useRef<HTMLDivElement>(null); // Cria uma referência para o menu
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [menuContent, setMenuContent] = useState({
+    imageUrl: "https://via.placeholder.com/150",
+    firstName: "User Name",
+    email: "user@mail.com",
+  });
 
-  // Fecha o menu se o usuário clicar fora dele
   useEffect(() => {
+    const storedUser = localStorage.getItem("loggedInUser");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setMenuContent({
+        imageUrl: parsedUser.imageUrl || "https://via.placeholder.com/150",
+        firstName: parsedUser.firstName || "User Name",
+        email: parsedUser.email || "user@mail.com",
+      });
+    }
+
     function handleOutsideClick(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        toggleMenu(); // Fecha o menu se o clique estiver fora do modal
+        toggleMenu();
       }
     }
 
@@ -29,47 +45,51 @@ function HamburgerMenu({ menuOpen, toggleMenu }: HamburgerMenuProps) {
       document.addEventListener("mousedown", handleOutsideClick);
     }
     return () => {
-      document.removeEventListener("mousedown", handleOutsideClick); // Limpa o evento ao desmontar
+      document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, [menuOpen, toggleMenu]);
 
-  if (!menuOpen) return null; // Não renderiza se o menu estiver fechado
+  const handleSignOut = async () => {
+    try {
+      await signOut(); // Faz o logout com Clerk
+      localStorage.removeItem("loggedInUser"); // Remove o usuário logado do localStorage
+      navigate("/"); // Redireciona para a página inicial
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
+  };
+
+  if (!menuOpen) return null;
 
   return (
-    <div ref={menuRef} className="fixed top-0 left-0 h-full w-4/5 bg-white z-50" style={{ zIndex: 101 }}>
-      {/* Foto do usuário e informações básicas */}
+    <div ref={menuRef} className="fixed top-0 left-0 h-full w-4/5 bg-white z-50 lg:w-1/4">
       <div className="p-8 mb-6 flex items-center gap-4 border-b border-gray-300">
-        <img
-          src={user?.imageUrl || "https://via.placeholder.com/150"}
-          alt="user"
-          className="w-16 h-16 rounded-2xl"
-        />
+        <img src={menuContent.imageUrl} alt="user" className="w-16 h-16 rounded-2xl" />
         <div className="flex flex-col">
-          <span className="text-lg font-medium text-main-color mb-1">{user?.firstName || "User Name"}</span>
-          <span className="text-sm text-gray-600">
-            {user?.emailAddresses?.map(email => email.emailAddress).join(", ") || "user@mail.com"}
-          </span>
+          <span className="text-lg font-medium text-main-color mb-1">{menuContent.firstName}</span>
+          <span className="text-sm text-gray-600">{menuContent.email}</span>
         </div>
       </div>
 
-      {/* Opções do menu */}
       <ul className="px-5 pb-5">
         <MenuItem label="Personal Information" />
         <MenuItem label="My Orders" />
-        <MenuItem label="Promocodes & Gift Cards" />
         <MenuItem label="Notifications" withSwitch />
-        <MenuItem label="Face ID" withSwitch />
         <MenuItem label="Support Center" />
-        <MenuItem label="Sign Out" isSignOut />
+        <MenuItem label="Sign Out" isSignOut onClick={handleSignOut} />
       </ul>
     </div>
   );
 }
 
-// Componente de item de menu reutilizável
-function MenuItem({ label, withSwitch = false, isSignOut = false }: MenuItemProps) {
+function MenuItem({ label, withSwitch = false, isSignOut = false, onClick }: MenuItemProps) {
   return (
-    <li className="flex justify-between items-center py-2.5 mb-2">
+    <li
+      onClick={onClick}
+      className={`flex justify-between items-center py-2.5 mb-2 cursor-pointer ${
+        isSignOut ? "hover:text-red-500" : "hover:text-main-color"
+      }`}
+    >
       <span className={`text-base ${isSignOut ? "text-red-500" : "text-main-color"}`}>{label}</span>
 
       {withSwitch ? (
