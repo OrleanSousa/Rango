@@ -1,32 +1,44 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react"; // Para obter dados do Clerk
 import HamburguerMenu from "./HamburguerMenu";
 
 function Header() {
+  const { isSignedIn, user } = useUser(); // Dados do Clerk (caso logado)
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [userData, setUserData] = useState({
     firstName: "Usuário",
-    imageUrl: "https://via.placeholder.com/150",
+    email: "user@mail.com",
+    imageUrl: "https://via.placeholder.com/150/150",
   });
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("loggedInUser");
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setIsUserLoggedIn(parsedUser.isLoggedIn || false);
+    if (isSignedIn && user) {
+      // Caso esteja logado com Clerk
       setUserData({
-        firstName: parsedUser.firstName || "Usuário",
-        imageUrl: parsedUser.imageUrl || "https://via.placeholder.com/150",
+        firstName: user.firstName || "Usuário",
+        email: user.emailAddresses[0]?.emailAddress || "user@mail.com", // Pegando email do Clerk
+        imageUrl: user.imageUrl || "https://via.placeholder.com/150/150",
       });
+    } else {
+      // Verifica dados no localStorage se não estiver logado com Clerk
+      const storedUser = localStorage.getItem("loggedInUser");
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        setUserData({
+          firstName: parsedUser.firstName || "Usuário",
+          email: parsedUser.email || "user@mail.com",
+          imageUrl: parsedUser.imageUrl || "https://via.placeholder.com/150/150",
+        });
+      }
     }
-  }, []);
+  }, [isSignedIn, user]);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   return (
     <header className="flex justify-between items-center h-16 bg-gray-100 px-5 shadow">
-      {isUserLoggedIn ? (
+      {(isSignedIn || userData.firstName !== "Usuário") ? (
         <div className="flex items-center gap-2">
           <img
             src={userData.imageUrl}
@@ -34,7 +46,10 @@ function Header() {
             className="w-10 h-10 rounded-full border-2 border-gray-300 shadow-sm cursor-pointer"
             onClick={toggleMenu}
           />
-          <span className="text-gray-800 font-medium">{userData.firstName}</span>
+          <div className="flex flex-col">
+            <span className="text-gray-800 font-medium">{userData.firstName}</span>
+            <span className="text-gray-500 text-sm">{userData.email}</span>
+          </div>
         </div>
       ) : (
         <Link to="/">
