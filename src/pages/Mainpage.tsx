@@ -5,7 +5,6 @@ import Carousel from "../components/Carousel";
 import IndicatorDots from "../components/IndicatorDots";
 import SlideContent from "../components/SlideContent";
 
-
 function MainPage() {
   const [index, setIndex] = useState(0);
   const slides = [
@@ -38,13 +37,24 @@ function MainPage() {
   };
 
   return (
-    <div className="bg-gray-100 container lg:px-10 full-screen flex justify-center m-auto min-h-screen">
-      <div id="app" className="bg-gray-100 full-screen">
-        <div id="screen" className="opacity-100 h-full flex flex-col justify-center">
-          <Carousel slides={slides} handleScroll={handleScroll} sliderRef={sliderRef} />
-          <IndicatorDots totalSlides={slides.length} activeIndex={index} />
+    <div className="bg-gray-100 w-full h-screen flex justify-center items-center">
+      <div id="app" className="w-full h-full flex flex-col justify-center items-center">
+        <div id="screen" className="opacity-100 w-full h-full flex flex-col justify-center items-center">
+          <Carousel
+            slides={slides}
+            handleScroll={handleScroll}
+            sliderRef={sliderRef}
+            imageClass="max-w-[251px] w-2/3 mx-auto"
+          />
+          <IndicatorDots
+            totalSlides={slides.length}
+            activeIndex={index}
+            className="mt-4"
+            activeColor="bg-teal-400"
+            inactiveColor="bg-teal-300"
+          />
           <SlideContent title={slides[index].title} description={slides[index].description} />
-          <section className="p-5 mt-5">
+          <section className="p-5 mt-5 w-full">
             <Link to="/login">
               <button
                 className="h-[48px] bg-teal-400 text-white font-dm-sans font-bold text-sm leading-relaxed 

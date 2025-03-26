@@ -9,3 +9,6 @@
   .no-scrollbar::-webkit-scrollbar {
     display: none; /* Para Chrome, Safari e Opera */
   }
+.container{
+  @apply lg:max-w-[650px] max-w-[375px] flex justify-center mx-auto;
+}

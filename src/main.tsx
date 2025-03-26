@@ -7,6 +7,7 @@ import Login from './pages/Login.tsx'
 import SingUp from './pages/SingUp.tsx'
 import Dashboard from './pages/Dashboard.tsx'
 import { ClerkProvider } from '@clerk/clerk-react'
+import Layout from './components/Layout.tsx'
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -18,12 +19,14 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
     <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
+    <Layout>
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SingUp />} />
         <Route path="/dashboard" element={<Dashboard/>} />
       </Routes>
+    </Layout>
     </ClerkProvider>
     </BrowserRouter>
   </StrictMode>,

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useUser, useClerk } from "@clerk/clerk-react"; // Importa o hook useClerk para deslogar do Clerk
 
 interface MenuItemProps {
   label: string;
@@ -16,27 +17,41 @@ interface HamburgerMenuProps {
 function HamburgerMenu({ menuOpen, toggleMenu }: HamburgerMenuProps) {
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
+  const { user, isSignedIn } = useUser(); // Obtém os dados do usuário logado com Clerk
+  const { signOut } = useClerk(); // Hook para deslogar do Clerk
   const [menuContent, setMenuContent] = useState({
     imageUrl: "https://via.placeholder.com/150",
     firstName: "User Name",
     email: "user@mail.com",
   });
 
-  // Recupera o usuário logado do localStorage
+  // Atualiza os dados do menu com base no usuário logado
   useEffect(() => {
-    const loggedInUser = localStorage.getItem("loggedInUser");
-    if (loggedInUser) {
-      const user = JSON.parse(loggedInUser);
+    if (isSignedIn && user) {
       setMenuContent({
         imageUrl: user.imageUrl || "https://via.placeholder.com/150",
         firstName: user.firstName || "User Name",
-        email: user.email || "user@mail.com",
+        email: user.primaryEmailAddress?.emailAddress || "user@mail.com",
       });
+    } else {
+      // Caso o usuário não esteja logado, verifica o localStorage
+      const loggedInUser = localStorage.getItem("loggedInUser");
+      if (loggedInUser) {
+        const parsedUser = JSON.parse(loggedInUser);
+        setMenuContent({
+          imageUrl: parsedUser.imageUrl || "https://via.placeholder.com/150",
+          firstName: parsedUser.firstName || "User Name",
+          email: parsedUser.email || "user@mail.com",
+        });
+      }
     }
+  }, [isSignedIn, user]);
 
+  // Fecha o menu ao clicar fora dele
+  useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        toggleMenu(); // Fecha o menu se o clique for fora dele
+        toggleMenu();
       }
     }
 
@@ -48,33 +63,21 @@ function HamburgerMenu({ menuOpen, toggleMenu }: HamburgerMenuProps) {
     };
   }, [menuOpen, toggleMenu]);
 
-  const handleSignOut = () => {
-    localStorage.removeItem("loggedInUser"); // Remove o usuário logado
-    navigate("/"); // Redireciona para a página inicial
+  const handleSignOut = async () => {
+    try {
+      await signOut(); // Desloga do Clerk
+      localStorage.removeItem("loggedInUser"); // Remove o usuário do localStorage
+      navigate("/"); // Redireciona para a página inicial
+    } catch (error) {
+      console.error("Erro ao deslogar:", error);
+    }
   };
 
   return (
     <>
-      {/* Botão Hamburguer */}
-      <button
-        onClick={toggleMenu}
-        className="fixed top-4 left-4 z-50 p-2 bg-main-color rounded-md text-white lg:hidden"
-      >
-        {/* Ícone hamburguer */}
-        {menuOpen ? (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
-            <path stroke="#fff" strokeWidth="2" d="M5 5L19 19M5 19L19 5"></path> {/* X para fechar */}
-          </svg>
-        ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
-            <path stroke="#fff" strokeWidth="2" d="M4 7h16M4 12h16M4 17h16"></path> {/* Linhas */}
-          </svg>
-        )}
-      </button>
-
       {/* Menu lateral */}
       {menuOpen && (
-        <div ref={menuRef} className="fixed top-0 left-0 h-full w-4/5 bg-white z-50 lg:w-1/4">
+        <div ref={menuRef} className="absolute top-0 left-0 h-full w-4/5 bg-white z-101 lg:w-2/4 ">
           <div className="p-8 mb-6 flex items-center gap-4 border-b border-gray-300">
             <img src={menuContent.imageUrl} alt="user" className="w-16 h-16 rounded-2xl" />
             <div className="flex flex-col">

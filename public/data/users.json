@@ -24,7 +24,7 @@
       "email": "chris.brown@example.com",
       "password": "securepass",
       "imageUrl": "https://via.placeholder.com/150",
-      "isUserLoggedIn": false
+      "isUserLoggedIn": true
     },
     {
       "id": 4,

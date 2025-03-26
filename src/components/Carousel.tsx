@@ -1,13 +1,14 @@
-
 type CarouselProps = {
   slides: { src: string }[];
   handleScroll: () => void;
   sliderRef: React.RefObject<HTMLDivElement>;
+  imageClass?: string; // Classe CSS dinâmica para imagens
+  containerClass?: string; // Classe CSS dinâmica para o container principal
 };
 
-function Carousel({ slides, handleScroll, sliderRef }: CarouselProps) {
+function Carousel({ slides, handleScroll, sliderRef, imageClass, containerClass }: CarouselProps) {
   return (
-    <div className="relative h-[455px] flex justify-center items-center overflow-hidden">
+    <div className={`relative flex justify-center items-center overflow-hidden ${containerClass || ''}`}>
       <div
         ref={sliderRef}
         onScroll={handleScroll}
@@ -15,7 +16,11 @@ function Carousel({ slides, handleScroll, sliderRef }: CarouselProps) {
       >
         {slides.map((slide, i) => (
           <div key={i} className="embla__slide w-full cursor-pointer flex-shrink-0 snap-center">
-            <img src={slide.src} alt="Carousel" className="max-w-[251px] w-2/3 mx-auto object-contain" />
+            <img
+              src={slide.src}
+              alt="Carousel"
+              className={` object-contain ${imageClass || ''}`}
+            />
           </div>
         ))}
       </div>
