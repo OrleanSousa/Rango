@@ -35,7 +35,7 @@ function Header() {
   const isUserLoggedIn = isSignedIn || localStorage.getItem("loggedInUser");
 
   return (
-    <header className="flex justify-between items-center h-16 bg-gray-100 px-5 shadow">
+    <header className="flex justify-between items-center h-16 bg-gray-100 px-5 shadow w-full  top-0 left-0 z-10">
       {/* Ícone de voltar à esquerda */}
       {!isUserLoggedIn && (
         <Link to="/" className="flex items-center">
@@ -60,7 +60,7 @@ function Header() {
 
           <div className="ml-auto">
             <FaShoppingCart
-              onClick={toggleMenu}
+              
               className="text-gray-800 text-2xl cursor-pointer"
             />
           </div>

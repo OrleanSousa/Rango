@@ -77,7 +77,7 @@ function HamburgerMenu({ menuOpen, toggleMenu }: HamburgerMenuProps) {
     <>
       {/* Menu lateral */}
       {menuOpen && (
-        <div ref={menuRef} className="absolute top-0 left-0 h-full w-4/5 bg-white z-101 lg:w-2/4 ">
+        <div ref={menuRef} className="absolute top-0 left-0 h-full w-4/5 bg-white z-[102] lg:w-2/4 ">
           <div className="p-8 mb-6 flex items-center gap-4 border-b border-gray-300">
             <img src={menuContent.imageUrl} alt="user" className="w-16 h-16 rounded-2xl" />
             <div className="flex flex-col">

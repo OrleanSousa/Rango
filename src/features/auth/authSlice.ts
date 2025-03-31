@@ -18,6 +18,7 @@ interface UserResponse {
 
 // Define a interface AuthState para tipagem do estado de autenticação no Redux
 interface AuthState {
+  [x: string]: any;
   user: UserResponse | null; // Objeto que contém as informações do usuário logado (pode ser null)
   isLoading: boolean;        // Estado que indica se a aplicação está carregando durante o login/registro
   isError: boolean;          // Estado que indica se ocorreu algum erro no login/registro

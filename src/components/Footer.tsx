@@ -1,27 +1,41 @@
+import { useEffect, useState } from "react";
 import { SignInButton, useUser } from "@clerk/clerk-react";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // Para redirecionamento
+import { FaHome, FaSearch, FaShoppingBag, FaHeart, FaBell } from "react-icons/fa";
+import { Link } from "react-router-dom"; // Para redirecionamento
 
 function Footer() {
-  const { isSignedIn } = useUser(); // Verifica se o usuário está logado
-  const navigate = useNavigate(); // Hook para redirecionar
+  const { isSignedIn, user } = useUser(); // Dados do Clerk
+  const [userData, setUserData] = useState({
+    firstName: "Usuário",
+    imageUrl: "https://via.placeholder.com/150/150",
+  });
 
-  // Redireciona o usuário para o dashboard após o login bem-sucedido
   useEffect(() => {
-    if (isSignedIn) {
-      navigate("/dashboard");
+    if (isSignedIn && user) {
+      setUserData({
+        firstName: user.firstName || "Usuário",
+        imageUrl: user.imageUrl || "https://via.placeholder.com/150/150",
+      });
+    } else {
+      const storedUser = localStorage.getItem("loggedInUser");
+      if (storedUser) {
+        const parsedUser = JSON.parse(storedUser);
+        setUserData({
+          firstName: parsedUser.firstName || "Usuário",
+          imageUrl: parsedUser.imageUrl || "https://via.placeholder.com/150/150",
+        });
+      }
     }
-  }, [isSignedIn, navigate]); // Executa o efeito sempre que isSignedIn mudar
+  }, [isSignedIn, user]);
+
+  const isUserLoggedIn = isSignedIn || localStorage.getItem("loggedInUser");
 
   return (
-    <footer className="flex justify-center gap-4 py-4 bg-gray-100 px-5 lg:w-[512px] lg:align-iten-center lg:m-auto">
-      {!isSignedIn ? (
-        <>
-          {/* Botão de Login com Facebook */}
+    <>
+      {!isUserLoggedIn ? (
+        <footer className="flex justify-center gap-4 py-4 bg-gray-100 px-5 lg:w-[512px] lg:align-iten-center lg:m-auto">
           <SignInButton mode="modal">
-            <button
-              className="bg-white w-full h-12 flex justify-center items-center rounded-[10px] shadow cursor-pointer"
-            >
+            <button className="bg-white w-full h-12 flex justify-center items-center rounded-[10px] shadow cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" width="9" height="14" fill="none">
                 <path
                   fill="#1877F2"
@@ -31,11 +45,8 @@ function Footer() {
             </button>
           </SignInButton>
 
-          {/* Botão de Login com Google */}
           <SignInButton mode="modal">
-            <button
-              className="bg-white w-full h-12 flex justify-center items-center rounded-[10px] shadow cursor-pointer"
-            >
+            <button className="bg-white w-full h-12 flex justify-center items-center rounded-[10px] shadow cursor-pointer">
               <svg xmlns="http://www.w3.org/2000/svg" width="19" height="12" fill="none">
                 <path
                   fill="#DD4B39"
@@ -44,13 +55,29 @@ function Footer() {
               </svg>
             </button>
           </SignInButton>
-        </>
+        </footer>
       ) : (
-        <p className="text-sm">
-          Você já está logado. <a href="/dashboard" className="text-blue-600 underline">Ir para o Dashboard</a>
-        </p>
+        <footer className="z-[101] rounded-lg h-[70px] w-[335px] bg-white-100 m-auto bg-white ">
+          <ul className="flex items-center justify-around h-full">
+            <Link to='/dashboard' className="cursor-pointer flex items-center justify-center h-full w-[20%] rounded-lg">
+              <FaHome className="text-[var(--text-color)] opacity-80 text-2xl" />
+            </Link>
+            <Link to='/search' className="cursor-pointer flex items-center justify-center h-full w-[20%] rounded-lg">
+              <FaSearch className="text-[var(--main-turquoise)] opacity-80 text-2xl" />
+            </Link>
+            <Link to='/cart' className="cursor-pointer flex items-center justify-center h-full w-[20%] rounded-lg">
+              <FaShoppingBag className="text-[var(--text-color)] opacity-80 text-2xl" />
+            </Link>
+            <Link to='/favorit' className="cursor-pointer flex items-center justify-center h-full w-[20%] rounded-lg">
+              <FaHeart className="text-[var(--text-color)] opacity-80 text-2xl" />
+            </Link>
+            <Link to='/alerts' className="cursor-pointer flex items-center justify-center h-full w-[20%] rounded-lg">
+              <FaBell className="text-[var(--text-color)] opacity-80 text-2xl" />
+            </Link>
+          </ul>
+        </footer>
       )}
-    </footer>
+    </>
   );
 }
 

@@ -36,7 +36,7 @@ function LoginPage() {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col m-auto justify-center">
+    <div className="bg-gray-100 min-h-screen flex flex-col m-auto justify-center container">
       <Header />
       <main className="flex-grow container mx-auto px-5 flex items-center justify-center">
         <section className="bg-white rounded-lg shadow-lg w-full max-w-md p-8 lg:max-w-lg">
