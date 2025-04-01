@@ -5,6 +5,7 @@ import { Link } from "react-router-dom"; // Para redirecionamento
 
 function Footer() {
   const { isSignedIn, user } = useUser(); // Dados do Clerk
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [userData, setUserData] = useState({
     firstName: "Usuário",
     imageUrl: "https://via.placeholder.com/150/150",
