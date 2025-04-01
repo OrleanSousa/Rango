@@ -1,43 +1,47 @@
 [
-    {
+  {
       "id": 1,
       "name": "Caesar with Chicken",
       "image": "https://george-fx.github.io/dinehub_api/assets/dishes/01.jpg",
       "price": 10.99,
       "weight": "200g",
-      "kcal": 450
-    },
-    {
+      "kcal": 450,
+      "description": "A classic Caesar salad with tender grilled chicken, crispy romaine lettuce, and a creamy parmesan dressing."
+  },
+  {
       "id": 2,
       "name": "Grilled Salmon",
       "image": "https://george-fx.github.io/dinehub_api/assets/dishes/02.jpg",
       "price": 15.49,
       "weight": "250g",
-      "kcal": 520
-    },
-    {
+      "kcal": 520,
+      "description": "Fresh salmon fillet grilled to perfection, served with a side of roasted vegetables and a lemon butter sauce."
+  },
+  {
       "id": 3,
       "name": "Beef Steak",
       "image": "https://george-fx.github.io/dinehub_api/assets/dishes/03.jpg",
       "price": 18.99,
       "weight": "300g",
-      "kcal": 680
-    },
-    {
+      "kcal": 680,
+      "description": "Juicy, perfectly seared beef steak served with garlic mashed potatoes and a rich red wine reduction."
+  },
+  {
       "id": 4,
       "name": "Vegetable Salad",
       "image": "https://george-fx.github.io/dinehub_api/assets/dishes/04.jpg",
       "price": 8.99,
       "weight": "180g",
-      "kcal": 320
-    },
-    {
+      "kcal": 320,
+      "description": "A refreshing mix of fresh vegetables, topped with a light vinaigrette dressing and crunchy croutons."
+  },
+  {
       "id": 5,
       "name": "Pasta Carbonara",
       "image": "https://george-fx.github.io/dinehub_api/assets/dishes/05.jpg",
       "price": 12.99,
       "weight": "220g",
-      "kcal": 600
-    }
-  ]
-  
+      "kcal": 600,
+      "description": "Classic Italian pasta carbonara with creamy sauce, crispy pancetta, and a touch of parmesan cheese."
+  }
+]

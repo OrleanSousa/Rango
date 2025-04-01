@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import InputField from "../components/InputField";
@@ -11,14 +12,20 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [users, setUsers] = useState<{ email: string; password: string; firstName: string; imageUrl: string }[]>([]);
   const navigate = useNavigate();
+  const { isSignedIn } = useUser();
 
-  // Buscar usuários do arquivo JSON
+  // Buscar usuários do localStorage
   useEffect(() => {
-    fetch("/data/users.json")
-      .then((response) => response.json())
-      .then((data) => setUsers(data))
-      .catch((error) => console.error("Erro ao carregar usuários:", error));
+    const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
+    setUsers(storedUsers);
   }, []);
+
+  // Redirecionar se estiver logado com Clerk
+  useEffect(() => {
+    if (isSignedIn) {
+      navigate("/dashboard");
+    }
+  }, [isSignedIn, navigate]);
 
   // Função de login
   const handleLogin = () => {

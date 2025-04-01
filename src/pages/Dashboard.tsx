@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Carousel from "../components/Carousel";
 import IndicatorDots from "../components/IndicatorDots";
+import { Link } from "react-router-dom";
 
 function Dashboard() {
 
@@ -117,12 +118,10 @@ function Dashboard() {
 
   {/* Container do carousel */}
   <div className="overflow-x-auto no-scrollbar snap-x snap-mandatory px-5">
-    <div className="flex space-x-4">
-      {foodData.map((item: FoodItem) => (
-        <div 
-          key={item.id} 
-          className="bg-white p-2 rounded-lg shadow min-w-[250px] snap-center"
-        >
+  <div className="flex space-x-4">
+    {foodData.map((item: FoodItem) => (
+      <Link to={`/item/${item.id}`} key={item.id}>
+        <div className="bg-white p-2 rounded-lg shadow min-w-[250px] snap-center">
           <img
             src={item.image}
             alt={item.name}
@@ -137,9 +136,11 @@ function Dashboard() {
             R$ {item.price.toFixed(2)}
           </p>
         </div>
-      ))}
-    </div>
+      </Link>
+    ))}
   </div>
+</div>
+
 </div>
 
         <section className="px-5 py-2.5">
