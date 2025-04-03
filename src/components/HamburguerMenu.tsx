@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser, useClerk } from "@clerk/clerk-react"; // Importa o hook useClerk para deslogar do Clerk
+import { useUser, useClerk } from "@clerk/clerk-react";
 
 interface MenuItemProps {
   label: string;
@@ -17,35 +17,43 @@ interface HamburgerMenuProps {
 function HamburgerMenu({ menuOpen, toggleMenu }: HamburgerMenuProps) {
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement>(null);
-  const { user, isSignedIn } = useUser(); // Obtém os dados do usuário logado com Clerk
-  const { signOut } = useClerk(); // Hook para deslogar do Clerk
+  const { user, isSignedIn } = useUser();
+  const { signOut } = useClerk();
   const [menuContent, setMenuContent] = useState({
     imageUrl: "https://via.placeholder.com/150",
-    firstName: "User Name",
+    name: "User Name",
     email: "user@mail.com",
   });
 
-  // Atualiza os dados do menu com base no usuário logado
-  useEffect(() => {
+  // Função para atualizar os dados do usuário
+  const updateUserData = () => {
+    const storedUser = localStorage.getItem("loggedInUser");
+
     if (isSignedIn && user) {
-      setMenuContent({
+      const userData = {
         imageUrl: user.imageUrl || "https://via.placeholder.com/150",
-        firstName: user.firstName || "User Name",
+        name: user.firstName || "User Name",
         email: user.primaryEmailAddress?.emailAddress || "user@mail.com",
-      });
-    } else {
-      // Caso o usuário não esteja logado, verifica o localStorage
-      const loggedInUser = localStorage.getItem("loggedInUser");
-      if (loggedInUser) {
-        const parsedUser = JSON.parse(loggedInUser);
-        setMenuContent({
-          imageUrl: parsedUser.imageUrl || "https://via.placeholder.com/150",
-          firstName: parsedUser.firstName || "User Name",
-          email: parsedUser.email || "user@mail.com",
-        });
-      }
+      };
+
+      setMenuContent(userData);
+      localStorage.setItem("loggedInUser", JSON.stringify(userData));
+    } else if (storedUser) {
+      setMenuContent(JSON.parse(storedUser));
     }
+  };
+
+  // Atualiza os dados sempre que o usuário muda (logado pelo Clerk ou localStorage)
+  useEffect(() => {
+    updateUserData();
   }, [isSignedIn, user]);
+
+  // Verifica o localStorage quando o menu for aberto
+  useEffect(() => {
+    if (menuOpen) {
+      updateUserData();
+    }
+  }, [menuOpen]);
 
   // Fecha o menu ao clicar fora dele
   useEffect(() => {
@@ -65,9 +73,14 @@ function HamburgerMenu({ menuOpen, toggleMenu }: HamburgerMenuProps) {
 
   const handleSignOut = async () => {
     try {
-      await signOut(); // Desloga do Clerk
-      localStorage.removeItem("loggedInUser"); // Remove o usuário do localStorage
-      navigate("/"); // Redireciona para a página inicial
+      await signOut();
+      localStorage.removeItem("loggedInUser");
+      setMenuContent({
+        imageUrl: "https://via.placeholder.com/150",
+        name: "User Name",
+        email: "user@mail.com",
+      });
+      navigate("/");
     } catch (error) {
       console.error("Erro ao deslogar:", error);
     }
@@ -75,13 +88,12 @@ function HamburgerMenu({ menuOpen, toggleMenu }: HamburgerMenuProps) {
 
   return (
     <>
-      {/* Menu lateral */}
       {menuOpen && (
-        <div ref={menuRef} className="absolute top-0 left-0 h-full w-4/5 bg-white z-[102] lg:w-2/4 ">
+        <div ref={menuRef} className="absolute top-0 left-0 h-full w-4/5 bg-white z-[102] lg:w-2/4">
           <div className="p-8 mb-6 flex items-center gap-4 border-b border-gray-300">
             <img src={menuContent.imageUrl} alt="user" className="w-16 h-16 rounded-2xl" />
             <div className="flex flex-col">
-              <span className="text-lg font-medium text-main-color mb-1">{menuContent.firstName}</span>
+              <span className="text-lg font-medium text-main-color mb-1">{menuContent.name}</span>
               <span className="text-sm text-gray-600">{menuContent.email}</span>
             </div>
           </div>

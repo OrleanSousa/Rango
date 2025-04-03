@@ -58,7 +58,7 @@ function Footer() {
           </SignInButton>
         </footer>
       ) : (
-        <footer className="z-[101] rounded-lg h-[70px] w-[335px] bg-white-100 m-auto bg-white ">
+        <footer className=" rounded-lg h-[70px] w-[335px] bg-white-100 m-auto mb-5 bg-white lg:w-[610px] mt-10">
           <ul className="flex items-center justify-around h-full">
             <Link to='/dashboard' className="cursor-pointer flex items-center justify-center h-full w-[20%] rounded-lg">
               <FaHome className="text-[var(--text-color)] opacity-80 text-2xl" />

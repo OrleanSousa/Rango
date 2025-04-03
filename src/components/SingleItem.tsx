@@ -11,6 +11,7 @@ interface FoodItem {
   price: number;
   image: string;
   description: string;
+  quantity?: number; // Adicionamos a quantidade para gerenciar o carrinho
 }
 
 function SingleItem() {
@@ -37,6 +38,26 @@ function SingleItem() {
   const increment = () => setQuantity(quantity + 1);
   const decrement = () => setQuantity(quantity > 0 ? quantity - 1 : 0);
 
+  const addToCart = () => {
+    if (quantity === 0) return; // Se a quantidade for 0, não adiciona nada
+
+    const cartItems = JSON.parse(localStorage.getItem("cart") || "[]");
+
+    const existingItemIndex = cartItems.findIndex((item: FoodItem) => item.id === dish.id);
+
+    if (existingItemIndex !== -1) {
+      // Se o item já existe, apenas atualiza a quantidade
+      cartItems[existingItemIndex].quantity += quantity;
+    } else {
+      // Adiciona um novo item ao carrinho
+      cartItems.push({ ...dish, quantity });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cartItems));
+
+    setQuantity(0); // Reseta a quantidade após adicionar ao carrinho
+  };
+
   return (
     <main className="overflow-auto">
       <section className="relative mb-8">
@@ -59,15 +80,18 @@ function SingleItem() {
           <span className="font-bold text-lg">R$ {dish.price.toFixed(2)}</span>
           <div className="flex items-center">
             <button className="p-5 rounded-md" onClick={decrement}>
-              <FiMinus size={14} />
+              <FiMinus size={14} className="cursor-pointer" />
             </button>
             <span className="mx-2 font-bold text-base text-current">{quantity}</span>
             <button className="p-5 rounded-md" onClick={increment}>
-              <FiPlus size={14} />
+              <FiPlus size={14} className="cursor-pointer"/>
             </button>
           </div>
         </div>
-        <button className="h-12 bg-teal-500 text-white font-bold text-sm leading-7 cursor-pointer w-full flex justify-center items-center rounded-lg border border-main-turquoise capitalize">
+        <button 
+          className="h-12 bg-teal-500 text-white font-bold text-sm leading-7 cursor-pointer w-full flex justify-center items-center rounded-lg border border-main-turquoise capitalize"
+          onClick={addToCart}
+        >
           + Add to cart
         </button>
         <button className="h-12 bg-transparent text-main-turquoise font-bold text-sm leading-7 cursor-pointer w-full flex justify-center items-center rounded-lg border border-main-turquoise capitalize mt-2">

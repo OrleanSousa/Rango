@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard.tsx'
 import { ClerkProvider } from '@clerk/clerk-react'
 import Layout from './components/Layout.tsx'
 import ItemMenu from './pages/ItemMenu.tsx'
+import CartPage from './pages/CartPage.tsx'
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -27,7 +28,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/signup" element={<SingUp />} />
         <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/item/:id" element={<ItemMenu/>} />
-
+        <Route path="/cart" element={<CartPage/>} />
       </Routes>
     </Layout>
     </ClerkProvider>

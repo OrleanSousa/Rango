@@ -10,5 +10,5 @@
     display: none; /* Para Chrome, Safari e Opera */
   }
 .container{
-  @apply lg:max-w-[650px] max-w-[375px] flex justify-center mx-auto;
+  @apply lg:max-w-[650px] max-w-[375px] max-h-full lg:max-h-full flex justify-center mx-auto;
 }

@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom"; // Importa useNavigate e useLocation
-import { useUser } from "@clerk/clerk-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useUser  } from "@clerk/clerk-react";
 import { FaShoppingCart } from "react-icons/fa";
 import HamburguerMenu from "./HamburguerMenu";
+import { Link } from "react-router-dom";
 
 function Header() {
   const navigate = useNavigate();
-  const location = useLocation(); // Obtém a URL atual
-  const { isSignedIn, user } = useUser();
+  const location = useLocation();
+  const { isSignedIn, user } = useUser ();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [cartItems, setCartItems] = useState<{ price: number; quantity: number }[]>([]);
+  const [cartTotal, setCartTotal] = useState(0);
+
   const [userData, setUserData] = useState({
     firstName: "Usuário",
     imageUrl: "https://via.placeholder.com/150/150",
@@ -21,25 +25,36 @@ function Header() {
         imageUrl: user.imageUrl || "https://via.placeholder.com/150/150",
       });
     } else {
-      const storedUser = localStorage.getItem("loggedInUser");
-      if (storedUser) {
-        const parsedUser = JSON.parse(storedUser);
+      const storedUser  = localStorage.getItem("loggedInUser ");
+      if (storedUser ) {
+        const parsedUser  = JSON.parse(storedUser );
         setUserData({
-          firstName: parsedUser.firstName || "Usuário",
-          imageUrl: parsedUser.imageUrl || "https://via.placeholder.com/150/150",
+          firstName: parsedUser .firstName || "Usuário",
+          imageUrl: parsedUser .imageUrl || "https://via.placeholder.com/150/150",
         });
       }
     }
   }, [isSignedIn, user]);
 
+  useEffect(() => {
+    // Recupera o carrinho do localStorage
+    const storedCart = JSON.parse(localStorage.getItem("cart") || "[]");
+    setCartItems(storedCart);
+  }, []);
+
+  useEffect(() => {
+    // Calcula o total do carrinho sempre que cartItems mudar
+    const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    setCartTotal(total);
+  }, [cartItems]);
+
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
-  const isUserLoggedIn = isSignedIn || localStorage.getItem("loggedInUser");
-  const isItemMenuPage = location.pathname.includes("item"); // Verifica se a página é de item do menu
+  const isUserLoggedIn = isSignedIn || localStorage.getItem("loggedInUser ");
+  const isItemMenuPage = location.pathname.includes("item");
 
   return (
     <header className="flex justify-between items-center h-16 bg-gray-100 px-5 shadow w-full top-0 left-0 z-10">
-      {/* Se estiver na página de itemmenu, mostra a seta em vez da foto */}
       {isItemMenuPage ? (
         <button onClick={() => navigate(-1)} className="flex items-center">
           <svg xmlns="http://www.w3.org/2000/svg" width="8" height="14" fill="none">
@@ -60,9 +75,19 @@ function Header() {
         )
       )}
 
-      {/* Ícone do carrinho sempre visível */}
-      <div className="ml-auto">
-        <FaShoppingCart className="text-gray-800 text-2xl cursor-pointer" />
+      <div className="ml-auto flex flex-row">
+        <Link to={"/cart"}>
+          <div className="relative">
+            {cartTotal > 0 && (
+              <div
+                className="absolute bg-teal-500 px-[5px] py-[3px] rounded-[12px] bottom-[-6px] right-[-10px] flex items-center justify-center text-white font-bold text-[10px] font-dm-sans"
+              >
+                ${cartTotal.toFixed(2)}
+              </div>
+            )}
+            <FaShoppingCart className="text-gray-800 text-2xl cursor-pointer" />
+          </div>
+        </Link>
       </div>
 
       <HamburguerMenu menuOpen={menuOpen} toggleMenu={toggleMenu} />

@@ -59,9 +59,9 @@ function Dashboard() {
 
   return (
     <>
-      <div className="container flex flex-col justify-center position: absolute bg-gray-100">
+      <div className="container flex flex-col justify-center relative bg-gray-100">
         <Header />
-        <section className="mb-7.5 mt-2.5 position: relative">
+        <section className="mb-7.5 mt-2.5  relative">
           <div className="flex flex-col max-h-[434px]">
             <Carousel
               slides={slides}
