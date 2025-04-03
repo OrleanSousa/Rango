@@ -10,6 +10,7 @@ import { ClerkProvider } from '@clerk/clerk-react'
 import Layout from './components/Layout.tsx'
 import ItemMenu from './pages/ItemMenu.tsx'
 import CartPage from './pages/CartPage.tsx'
+import ProtectedRoute from './components/ProtectedRoute.tsx'
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -26,9 +27,9 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/" element={<App />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SingUp />} />
-        <Route path="/dashboard" element={<Dashboard/>} />
-        <Route path="/item/:id" element={<ItemMenu/>} />
-        <Route path="/cart" element={<CartPage/>} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/item/:id" element={<ProtectedRoute><ItemMenu /></ProtectedRoute>} />
+        <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
       </Routes>
     </Layout>
     </ClerkProvider>
