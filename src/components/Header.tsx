@@ -19,18 +19,20 @@ function Header() {
   });
 
   useEffect(() => {
+    console.log("isSignedIn:", isSignedIn);
+  console.log("user:", user);
     if (isSignedIn && user) {
       setUserData({
         firstName: user.firstName || "Usuário",
         imageUrl: user.imageUrl || "https://via.placeholder.com/150/150",
       });
     } else {
-      const storedUser  = localStorage.getItem("loggedInUser ");
+      const storedUser  = localStorage.getItem("loggedInUser");
       if (storedUser ) {
         const parsedUser  = JSON.parse(storedUser );
         setUserData({
-          firstName: parsedUser .firstName || "Usuário",
-          imageUrl: parsedUser .imageUrl || "https://via.placeholder.com/150/150",
+          firstName: parsedUser.firstName || "Usuário",
+          imageUrl: parsedUser.imageUrl || "https://via.placeholder.com/150/150",
         });
       }
     }
@@ -50,7 +52,7 @@ function Header() {
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
-  const isUserLoggedIn = isSignedIn || localStorage.getItem("loggedInUser ");
+  const isUserLoggedIn = isSignedIn || localStorage.getItem("loggedInUser");
   const isItemMenuPage = location.pathname.includes("item");
 
   return (
