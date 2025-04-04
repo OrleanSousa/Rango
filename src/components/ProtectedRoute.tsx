@@ -9,8 +9,11 @@ interface ProtectedRouteProps {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { isSignedIn } = useUser();
 
-  if (!isSignedIn) {
-    return <Navigate to="/login" replace />;
+  // Verifica se há um usuário logado no localStorage
+  const loggedInUser = localStorage.getItem("loggedInUser");
+
+  if (!isSignedIn && !loggedInUser) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <>{children}</>;

@@ -9,6 +9,7 @@ function Footer() {
     firstName: "Usuário",
     imageUrl: "https://via.placeholder.com/150/150",
   });
+  
 
   useEffect(() => {
     if (isSignedIn && user) {
